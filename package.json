@@ -1,6 +1,6 @@
 {
-  "name": "@carbon-zil/cli",
-  "version": "1.0.0",
+  "name": "carbon-zil",
+  "version": "1.0.1",
   "description": "A CLI to bootstrap new zilliqa project and deploy and text contract",
   "main": "src/index.js",
   "bin": {
@@ -10,8 +10,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "esm": "^3.2.18",
     "inquirer": "^8.2.0",
