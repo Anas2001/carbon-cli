@@ -5,7 +5,7 @@ import {exec as init} from "./createZilliqaProject";
 import {exec as compile} from "./compileScilla";
 
 export async function exec(args) {
-    program.version("1.0.3");
+    program.version("1.0.5");
 
     program
         .command("deploy")

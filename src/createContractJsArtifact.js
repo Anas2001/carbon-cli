@@ -1,19 +1,14 @@
 export default (contractPath, contractData) => {
     const {contract_info} = contractData;
     const {transitions, events, fields} = contract_info;
-    return `const {Zilliqa} = require("@zilliqa/zilliqa");
-import fs from "fs";
+    return `import {Zilliqa} from "@zilliqa-js/zilliqa";
+import {readFileSync} from "fs";
 import {units, Long, BN} from "@zilliqa-js/util";            
-module.exports = ({privateKey, api, version, net, contractAddress}) => {
+function contract({privateKey, api, version, net, contractAddress}) {
   const zilliqa = new Zilliqa(api);
   zilliqa.wallet.addByPrivateKey(privateKey);
-  const code = fs.readFileSync("${contractPath}", "utf8");
+  const code = readFileSync("${contractPath}", "utf8");
   let initParams = ${JSON.stringify(contract_info.params)};
-  initParams.push({
-    vname: '_scilla_version',
-    type: 'Uint32',
-    value: '0',
-  });
   let myAddress = contractAddress;
   return {
     init({privateKey, address}) {
@@ -25,11 +20,19 @@ module.exports = ({privateKey, api, version, net, contractAddress}) => {
     replacePrivateKey(privateKey) {
         zilliqa.wallet.addByPrivateKey(privateKey);
     },
+    getContractAddress() {
+        return myAddress;
+    },
     async deploy(${contract_info.params.map(({vname}) => vname).join(", ")}, gasLimit = 60000) {
         const args = arguments;
         initParams = initParams.map((param, index) => {
-            param.vname = args[index].toString();
+            param.value = args[index].toString();
             return param;
+        });
+        initParams.push({
+            vname: '_scilla_version',
+            type: 'Uint32',
+            value: '0',
         });
         const zilliqaContract = zilliqa.contracts.new(code, initParams);
         const [deployTx, deployedContract] = await zilliqaContract.deployWithoutConfirm({
@@ -45,7 +48,7 @@ module.exports = ({privateKey, api, version, net, contractAddress}) => {
             throw new Error("something went wrong by contract deployment with txId: 0x" + deployTx.id);
         }
     }
-    ,${transitions.map(transition => `async ${transition.vname}({${transition.params.map(({vname}) => vname).join(", ")}}, {gasPrice = 2000,gasLimit = 2000, zilAmount = 0}, callback) {
+    ,${transitions.map(transition => `async ${transition.vname}(${transition.params.length ? transition.params.map(({vname}) => vname).join(", ") + ', ' : ""}gasPrice = 2000,gasLimit = 2000, zilAmount = 0, callback) {
         const args = arguments;
         const tag = args.callee.name;
         let params = ${JSON.stringify(transition.params)};
@@ -81,11 +84,13 @@ module.exports = ({privateKey, api, version, net, contractAddress}) => {
     ,fields: ${JSON.stringify(fields.reduce((acc, field) => {
         const obj = {};
         obj[field.vname] = {
-            name: field.vname,
-            type: field.type,
+            [field.vname]: field.vname,
+            [field.type]: field.type,
         };
         return Object.assign(acc, obj);
     }, {}))}
   };  
-};`;
+};
+
+module.exports = contract;`;
 };
