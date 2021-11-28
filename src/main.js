@@ -4,7 +4,7 @@ import {exec as deploy} from "./deployContract";
 import {exec as init} from "./createZilliqaProject";
 
 export async function exec(args) {
-    program.version("1.0.0");
+    program.version("1.0.2");
 
     program
         .command("deploy")
