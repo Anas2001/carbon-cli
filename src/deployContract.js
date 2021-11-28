@@ -52,7 +52,7 @@ async function prompForMissingOptions() {
     };
 };
 
-async function parseParamsContract(code) {
+export async function parseParamsContract(code) {
     const url = "https://scilla-server.zilliqa.com/contract/check";
     const {result, message} = (await axios.post(url, {code})).data;
     if (result) {
