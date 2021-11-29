@@ -56,5 +56,10 @@ export async function exec(args) {
             await tasks.run();
         });
 
+    program
+        .command("ceres")
+        .description("start ceres server")
+        .action(async () => require("./startCeres"));
+
     program.parse(args);
 }
