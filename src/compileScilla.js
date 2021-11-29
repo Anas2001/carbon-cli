@@ -6,6 +6,11 @@ import inquirer from "inquirer";
 import {parseParamsContract} from "./deployContract";
 import createContractJsArtifact from "./createContractJsArtifact";
 
+import Lister from "listr";
+import tryToRun from "./tryToRun";
+
+const term = require('terminal-kit').terminal;
+
 const list = promisify(fs.readdir);
 const writeFile = promisify(fs.writeFile);
 const contractAbsPath = path.resolve(process.cwd(), "zilliqa", "contracts");
@@ -41,6 +46,7 @@ async function prompForMissingOptions(options) {
         return {
             ...options,
             contractPath: contractPath(answers.contractName),
+            contractName: answers.contractName,
         };
     }
     return options;
@@ -48,25 +54,34 @@ async function prompForMissingOptions(options) {
 
 async function compileScilla(contractPath, contractName, targetDir) {
     const code = fs.readFileSync(contractPath, "utf8");
-    try {
-        const contractData = await parseParamsContract(code);
-        const artifact = createContractJsArtifact(contractPath, contractData);
-        await writeFile(path.resolve(targetDir, contractName + ".js"), artifact, 'utf8');
-    } catch (e) {
-        console.log(e);
-        console.error("something went wrong with parsing contract: ", contractPath);
-    }
+    const contractData = await parseParamsContract(code);
+    const artifact = createContractJsArtifact(contractPath, contractData);
+    await writeFile(path.resolve(targetDir, contractName + ".js"), artifact, 'utf8');
 }
 
 export async function exec(args) {
     let options = parseArgumentAndOptions(args);
     options = await prompForMissingOptions(options);
+    const tasks = [];
+    console.log("compile scilla contracts under " + options.contractsPath);
     if (!options.notAll) {
         const contracts = await list(options.contractsPath);
         for (let i = 0; i < contracts.length; i++) {
-            await compileScilla(contractPath(contracts[i]), contracts[i], options.targetDirectory);
+            tasks.push({
+                title: "compile scilla contract: " + contracts[i],
+                task: () => tryToRun(async () => await compileScilla(contractPath(contracts[i]), contracts[i], options.targetDirectory))
+            });
         }
     } else {
-        await compileScilla(options.contractPath, options.targetDirectory);
+        tasks.push({
+            title: "compile scilla contract: " + options.contractName,
+            task: () => tryToRun(async () => await compileScilla(options.contractPath, options.contractName, options.targetDirectory))
+        });
     }
+
+    await (new Lister(tasks)).run();
+
+    term.green("Compile Done! \n");
+
+    return true;
 }

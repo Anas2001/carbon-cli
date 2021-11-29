@@ -16,7 +16,6 @@
     "inquirer": "^8.2.0",
     "arg": "^5.0.1",
     "ncp": "^2.0.0",
-    "chalk": "^5.0.0",
     "axios": "^0.24.0",
     "@zilliqa-js/account": "^3.3.3",
     "@zilliqa-js/contract": "^3.3.3",
@@ -24,7 +23,10 @@
     "@zilliqa-js/subscriptions": "^3.3.3",
     "@zilliqa-js/util": "^3.3.3",
     "@zilliqa-js/zilliqa": "^3.3.3",
-    "commander": "^8.3.0"
+    "commander": "^8.3.0",
+    "@etclabscore/dl-github-releases": "^1.2.1",
+    "listr": "^0.14.3",
+    "terminal-kit": "^2.2.3"
   },
   "devDependencies": {
     "create-flex-plugin": "^4.2.2"
