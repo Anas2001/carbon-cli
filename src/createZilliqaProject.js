@@ -23,6 +23,10 @@ const createOrAddZilliqaDepends = async (targetDirectory) => {
     const packagePath = path.resolve(targetDirectory, "package.json");
     if (await exists(packagePath)) {
         const p = JSON.parse(await read(packagePath, "utf8"));
+        p.scripts = {
+            ...p.scripts,
+            "zil-test": "jest --config ./jest-zilliqa.json",
+        };
         p.dependencies = {
             ...p.dependencies,
             "@zilliqa-js/account": "^3.3.3",
@@ -31,13 +35,22 @@ const createOrAddZilliqaDepends = async (targetDirectory) => {
             "@zilliqa-js/subscriptions": "^3.3.3",
             "@zilliqa-js/util": "^3.3.3",
             "@zilliqa-js/zilliqa": "^3.3.3",
+            "jest": "^27.2.5"
+        };
+        p.devDependencies = {
+            ...p.devDependencies,
+            "jest": "^27.2.5",
+            "ts-jest": "^27.0.3"
         };
         await write(packagePath, JSON.stringify(p, null, 2), "utf8");
     } else {
         const p = JSON.parse(await read(path.resolve(templateDir, "zilliqa", "package.json")));
         await write(packagePath, JSON.stringify(p, null, 2), "utf8");
     }
-
+    const data = JSON.parse(await read(path.resolve(templateDir, "zilliqa", "jest-zilliqa.json")));
+    const tsConfig = JSON.parse(await read(path.resolve(templateDir, "zilliqa", "tsconfig.json")));
+    await write(path.resolve(targetDirectory, "jest-zilliqa.json"), JSON.stringify(data, null, 2), "utf8");
+    await write(path.resolve(targetDirectory, "tsconfig.json"), JSON.stringify(tsConfig, null, 2), "utf8");
 };
 
 async function initGit(options) {
@@ -72,7 +85,11 @@ export async function exec(args) {
         },
         {
             title: "Clean up",
-            task: () => tryToRun(async () => await remove(path.resolve(options.targetDirectory, "zilliqa", "package.json")))
+            task: () => tryToRun(async () => {
+                await remove(path.resolve(options.targetDirectory, "zilliqa", "package.json"));
+                await remove(path.resolve(options.targetDirectory, "zilliqa", "jest-zilliqa.json"));
+                await remove(path.resolve(options.targetDirectory, "zilliqa", "tsconfig.json"));
+            })
         }
     ];
 

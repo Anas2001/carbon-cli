@@ -50,9 +50,10 @@ function contract({privateKey, api, version, net, contractAddress}) {
     }
     ,${transitions.map(transition => `async ${transition.vname}(${transition.params.length ? transition.params.map(({vname}) => vname).join(", ") + ', ' : ""}gasPrice = 2000,gasLimit = 2000, zilAmount = 0, callback) {
         const args = arguments;
-        const tag = args.callee.name;
-        let params = ${JSON.stringify(transition.params)};
-        params = params.map((param, index) => {
+        const e = new Error();
+        const frame = e.stack.split("\\n")[2];
+        const tag = frame.split(" ")[5];
+        const params = ${JSON.stringify(transition.params)}.map((param, index) => {
             param.value = args[index].toString();
             return param;
         });

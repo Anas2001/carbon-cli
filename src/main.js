@@ -4,6 +4,10 @@ import {exec as deploy} from "./deployContract";
 import {exec as init} from "./createZilliqaProject";
 import {exec as compile} from "./compileScilla";
 import {exec as addScilla} from "./addScillaContract";
+import {exec as addTestScilla} from "./addScillaTestContract";
+
+import execa from "execa";
+import Lister from "listr";
 
 export async function exec(args) {
     program.version("1.0.5");
@@ -32,6 +36,25 @@ export async function exec(args) {
         .description("create new scilla contract template")
         .option("-n, --name", "contract name without ext .scilla")
         .action(async () => await addScilla(args));
+
+    program
+        .command("scilla-test")
+        .description("create new scilla test contract template")
+        .option("-n, --name", "contract name without ext .js | .ts")
+        .action(async () => await addTestScilla(args));
+
+    program
+        .command("test")
+        .description("run all tests under test folder with prefix .spec.(t|j)s")
+        .action(async () => {
+            const tasks = new Lister([
+                {
+                    title: "Run scilla contracts tests",
+                    task: () => execa("npm", ["run", "zil-test"], {cwd: process.cwd()})
+                }
+            ]);
+            await tasks.run();
+        });
 
     program.parse(args);
 }
