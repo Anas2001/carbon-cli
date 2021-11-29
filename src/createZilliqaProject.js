@@ -4,7 +4,11 @@ import {promisify} from "util";
 import ncp from "ncp";
 import path from "path";
 import Lister from "listr";
+
+const execa = require('execa');
+import {projectInstall} from "pkg-install"
 import tryToRun from "./tryToRun";
+
 const term = require('terminal-kit').terminal;
 
 const access = promisify(fs.access);
@@ -34,11 +38,26 @@ const createOrAddZilliqaDepends = async (targetDirectory) => {
         await write(packagePath, JSON.stringify(p, null, 2), "utf8");
     }
 
-}
+};
+
+async function initGit(options) {
+    const result = await execa("git", ["init"], {
+        cwd: options.targetDirectory,
+    });
+    if (result.failed) {
+        return Promise.reject(new Error("Failed to init git repository"));
+    }
+};
+
+async function install(options) {
+    return projectInstall({
+        cwd: options.targetDirectory
+    });
+};
 
 export async function exec(args) {
     const options = parseArgumentAndOptions(args);
-    const tasks = new Lister([
+    const todos = [
         {
             title: "Check access to target dir: " + options.targetDirectory,
             task: () => tryToRun(async () => await access(options.targetDirectory, fs.constants.R_OK))
@@ -55,7 +74,23 @@ export async function exec(args) {
             title: "Clean up",
             task: () => tryToRun(async () => await remove(path.resolve(options.targetDirectory, "zilliqa", "package.json")))
         }
-    ]);
+    ];
+
+    if (options.git) {
+        todos.push({
+            title: "Initialization Git repository",
+            task: () => tryToRun(async () => await initGit(options))
+        });
+    }
+
+    if (options.runInstall) {
+        todos.push({
+            title: "Install npm packages",
+            task: () => tryToRun(async () => await install(options))
+        });
+    }
+
+    const tasks = new Lister(todos);
 
     await tasks.run();
 
