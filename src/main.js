@@ -6,6 +6,8 @@ import {exec as compile} from "./compileScilla";
 import {exec as addScilla} from "./addScillaContract";
 import {exec as addTestScilla} from "./addScillaTestContract";
 
+import ceresServer from "./ceresServer";
+
 import execa from "execa";
 import Lister from "listr";
 
@@ -59,7 +61,14 @@ export async function exec(args) {
     program
         .command("ceres")
         .description("start ceres server")
-        .action(async () => require("./startCeres"));
+        .action(async () => await ceresServer.startImage(ceresServer.services.local));
 
     program.parse(args);
-}
+};
+
+process.on('SIGINT', async () => {
+    console.log("Please wait until ceres service stop....");
+    await ceresServer.closeCeres();
+    console.log("Done!");
+    process.exit(0);
+});

@@ -5,7 +5,7 @@ export default (contractPath, contractData) => {
 import {readFileSync} from "fs";
 import {units, Long, BN} from "@zilliqa-js/util";            
 function contract({privateKey, api, version, net, contractAddress}) {
-  const zilliqa = new Zilliqa(api);
+  let zilliqa = new Zilliqa(api);
   zilliqa.wallet.addByPrivateKey(privateKey);
   const code = readFileSync("${contractPath}", "utf8");
   let initParams = ${JSON.stringify(contract_info.params)};
@@ -14,18 +14,20 @@ function contract({privateKey, api, version, net, contractAddress}) {
     init({privateKey, address}) {
       myAddress = address;
       if(privateKey) {
-        zilliqa.wallet.addByPrivateKey(privateKey);
+          zilliqa = new Zilliqa(api);
+          zilliqa.wallet.addByPrivateKey(privateKey);
       }
     },
     replacePrivateKey(privateKey) {
-        zilliqa.wallet.addByPrivateKey(privateKey);
+         zilliqa = new Zilliqa(api);
+         zilliqa.wallet.addByPrivateKey(privateKey);
     },
     getContractAddress() {
         return myAddress;
     },
     async deploy(${contract_info.params.map(({vname}) => vname).join(", ")}, gasLimit = 60000) {
         const args = arguments;
-        initParams = initParams.map((param, index) => {
+        initParams = initParams.filter(({vname}) => vname !== "_scilla_version").map((param, index) => {
             param.value = args[index].toString();
             return param;
         });
@@ -51,8 +53,8 @@ function contract({privateKey, api, version, net, contractAddress}) {
     ,${transitions.map(transition => `async ${transition.vname}(${transition.params.length ? transition.params.map(({vname}) => vname).join(", ") + ', ' : ""}gasPrice = 2000,gasLimit = 2000, zilAmount = 0, callback) {
         const args = arguments;
         const e = new Error();
-        const frame = e.stack.split("\\n")[2];
-        const tag = frame.split(" ")[5];
+        const frame = e.stack.split("\\n")[1];
+        const tag = frame.split(" ")[5].split(".")[1];
         const params = ${JSON.stringify(transition.params)}.map((param, index) => {
             param.value = args[index].toString();
             return param;
@@ -61,7 +63,7 @@ function contract({privateKey, api, version, net, contractAddress}) {
             version,
             amount: new BN(zilAmount),
             gasPrice: units.toQa(gasPrice.toString(), units.Units.Li),
-            gasLimit: Long.fromNumber(8000),
+            gasLimit: Long.fromNumber(gasLimit),
         });
         
         if(callback) {

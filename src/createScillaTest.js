@@ -16,16 +16,9 @@ const net = 'Local';
 //TODO: please enter test description 
 describe('test smart contract', () => {
 
-    beforeAll(async () => {
-        await setup().start();
-    });
-    
-    afterAll(async () => {
-        await setup().stop();
-    });
     
     //TODO: please enter test description 
-    it("should ......", async() => {
+    test("should ......", async() => {
     
     });
 });
