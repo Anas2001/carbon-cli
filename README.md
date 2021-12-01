@@ -4,19 +4,29 @@ Zilliqa bockchain CLI for bootstrap a project with example token contract
 
 ## Setup
 
+### system requirements
+    
+    1- Docker 
+    2- nodejs and npm 
+    3- zilliqa/zilliqa-isolated-server docker contntainer from docker hub
+    4- zilliqa/devex docker contntainer from docker hub
+    5- zilliqa/scilla docker contntainer from docker hub
+
 Please make sure you have installed the nodejs with npm. First you need to install the `carbon cli` with
 command `npm i -g carbon-zil`
 
 to create new zilliqa project with smart contracts:
 
     1- create project folder 
-    2- inside project folder run `carbon init`
+    2- inside project folder run `carbon init -g -i`
 
 ## How to generate scilla artifacts as js files?
 
+### ToDo: compile contracts with transitions parameters of AST types
+
 Please make sure your run the compile command from root folder of project. To compile the contract (convert smart
 contract to js as artifacts) you need only to run `carbon compile`
-the out of artifacts will be generated under `artifacts` folder. You can use the artifacts of smart contracts to deploy
+the out of artifacts will be generated under `zilliqa/artifacts` folder. You can use the artifacts of smart contracts to deploy
 or call transitions of smart contract from nodejs.
 
 ## Testing:
@@ -31,5 +41,10 @@ Carbon uses jestJS testing framework to provide you solid framework to write you
 
 You will find the new generated test script under test. You need to be sure that you run ceres server with the
 command `carbon ceres` before you start the command `carbon test` for running all tests under "zilliqa/test". To close
-the ceres with `ctr + c`. You need first to install ceres server from docker more info
-please visit https://dev.zilliqa.com/docs/dev/dev-tools-ceres/
+the ceres with `ctr + c`.
+
+
+## ToDos:
+    
+    1- deploy contracts to target network
+    2- compile contracts with transitions parameters of AST types
