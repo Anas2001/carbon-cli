@@ -61,7 +61,7 @@ export async function exec(args) {
     program
         .command("ceres")
         .description("start ceres server")
-        .action(async () => await ceresServer.startImage(ceresServer.services.local));
+        .action(async () => await ceresServer.startImage());
 
     program.parse(args);
 };

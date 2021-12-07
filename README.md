@@ -8,9 +8,6 @@ Zilliqa bockchain CLI for bootstrap a project with example token contract
     
     1- Docker 
     2- nodejs and npm 
-    3- zilliqa/zilliqa-isolated-server docker contntainer from docker hub
-    4- zilliqa/devex docker contntainer from docker hub
-    5- zilliqa/scilla docker contntainer from docker hub
 
 Please make sure you have installed the nodejs with npm. First you need to install the `carbon cli` with
 command `npm i -g carbon-zil`

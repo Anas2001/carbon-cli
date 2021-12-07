@@ -56,7 +56,11 @@ function contract({privateKey, api, version, net, contractAddress}) {
         const frame = e.stack.split("\\n")[1];
         const tag = frame.split(" ")[5].split(".")[1];
         const params = ${JSON.stringify(transition.params)}.map((param, index) => {
-            param.value = args[index].toString();
+            if (typeof args[index] === "object") {
+                param.value = args[index];
+            } else {
+                param.value = args[index].toString();
+            }
             return param;
         });
         const callTx = await zilliqa.contracts.at(myAddress).callWithoutConfirm(tag, params, {
@@ -70,6 +74,9 @@ function contract({privateKey, api, version, net, contractAddress}) {
             callback("0x" + callTx.id);
         }
         const confirmedTxn = await callTx.confirm(callTx.id);
+        if (!confirmedTxn.receipt.success) {
+            console.log(JSON.stringify(confirmedTxn, null, 2));
+        }
         return confirmedTxn.receipt.success === true;
     }`)}
     ,events: ${JSON.stringify(events.reduce((acc, event) => {

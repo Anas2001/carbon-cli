@@ -1,6 +1,6 @@
 {
   "name": "carbon-zil",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "A CLI to bootstrap new zilliqa project and deploy and text contract",
   "main": "src/index.js",
   "bin": {
@@ -35,7 +35,9 @@
     "express": "^4.17.1",
     "node-docker-api": "^1.1.22",
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
+    "pegjs": "^0.10.0",
+    "which": "^2.0.2"
   },
   "devDependencies": {
     "create-flex-plugin": "^4.2.2"
