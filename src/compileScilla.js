@@ -66,6 +66,7 @@ export async function exec(args) {
     let options = parseArgumentAndOptions(args);
     options = await prompForMissingOptions(options);
     const tasks = [];
+    console.log(options);
     console.log("compile scilla contracts under " + options.contractsPath);
     if (!options.notAll) {
         const contracts = await list(options.contractsPath);
