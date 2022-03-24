@@ -56,6 +56,9 @@ async function compileScilla(contractPath, contractName, targetDir) {
     const code = fs.readFileSync(contractPath, "utf8");
     const contractData = await parseParamsContract(code);
     const artifact = createContractJsArtifact(contractPath, contractData);
+    if (!fs.existsSync(artifact)) {
+        fs.mkdirSync(artifact);
+    }
     await writeFile(path.resolve(targetDir, contractName + ".js"), artifact, 'utf8');
 }
 
