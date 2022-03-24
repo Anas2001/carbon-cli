@@ -56,9 +56,7 @@ async function compileScilla(contractPath, contractName, targetDir) {
     const code = fs.readFileSync(contractPath, "utf8");
     const contractData = await parseParamsContract(code);
     const artifact = createContractJsArtifact(contractPath, contractData);
-    if (!fs.existsSync(artifact)) {
-        fs.mkdirSync(artifact);
-    }
+    console.log(targetDir);
     if (!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir);
     }
