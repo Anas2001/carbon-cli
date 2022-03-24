@@ -59,6 +59,9 @@ async function compileScilla(contractPath, contractName, targetDir) {
     if (!fs.existsSync(artifact)) {
         fs.mkdirSync(artifact);
     }
+    if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir);
+    }
     await writeFile(path.resolve(targetDir, contractName + ".js"), artifact, 'utf8');
 }
 
