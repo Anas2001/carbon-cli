@@ -14,7 +14,7 @@ const term = require('terminal-kit').terminal;
 const list = promisify(fs.readdir);
 const writeFile = promisify(fs.writeFile);
 const contractAbsPath = path.resolve(process.cwd(), "zilliqa", "contracts");
-const contractPath = (contractName) => path.resolve(contractAbsPath, contractName);
+const contractPath = (contractName) => path.resolve(__dirname, "../zilliqa/contracts/" + contractName);
 
 function parseArgumentAndOptions(rawArgs) {
     const args = arg({
@@ -55,7 +55,7 @@ async function prompForMissingOptions(options) {
 async function compileScilla(contractPath, contractName, targetDir) {
     const code = fs.readFileSync(contractPath, "utf8");
     const contractData = await parseParamsContract(code);
-    const artifact = createContractJsArtifact(contractPath, contractData);
+    const artifact = createContractJsArtifact(contractName, contractData);
     if (!fs.existsSync(targetDir)) {
         fs.mkdirSync(targetDir, {recursive: true});
     }
