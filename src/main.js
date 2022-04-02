@@ -11,8 +11,10 @@ import ceresServer from "./ceresServer";
 import execa from "execa";
 import Lister from "listr";
 
+import packageJson from "../package.json";
+
 export async function exec(args) {
-    program.version("1.0.5");
+    program.version(packageJson.version);
 
     program
         .command("deploy")
