@@ -8,7 +8,7 @@ import {resolve} from "path";
 function contract({privateKey, api, version, net, contractAddress}) {
   let zilliqa = new Zilliqa(api);
   zilliqa.wallet.addByPrivateKey(privateKey);
-  const code = readFileSync(resolve(process.cwd(), "zilliqa/contracts/" + ${contractName}), "utf8");
+  const code = readFileSync(resolve(process.cwd(), "zilliqa/contracts/" + ${contractName})), "utf8");
   let initParams = ${JSON.stringify(contract_info.params)};
   let myAddress = contractAddress;
   return {
