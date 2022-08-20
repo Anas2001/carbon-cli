@@ -1,14 +1,14 @@
 export default (contractName, contractData) => {
     const {contract_info} = contractData;
     const {transitions, events, fields} = contract_info;
-    return `import {Zilliqa} from "@zilliqa-js/zilliqa";
-import {readFileSync} from "fs";
-import {units, Long, BN} from "@zilliqa-js/util";  
-import {resolve} from "path";          
+    return `const {Zilliqa} = require("@zilliqa-js/zilliqa");
+const {readFileSync} = require("fs");
+const {units, Long, BN} = require("@zilliqa-js/util");  
+const {resolve} = require("path");          
 function contract({privateKey, api, version, net, contractAddress}) {
   let zilliqa = new Zilliqa(api);
   zilliqa.wallet.addByPrivateKey(privateKey);
-  const code = readFileSync(resolve(process.cwd(), "zilliqa/contracts/" + ${contractName})), "utf8");
+  const code = readFileSync(resolve(process.cwd(), "zilliqa/contracts", "${contractName}"), "utf8");
   let initParams = ${JSON.stringify(contract_info.params)};
   let myAddress = contractAddress;
   return {
