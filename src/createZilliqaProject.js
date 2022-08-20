@@ -111,6 +111,6 @@ export async function exec(args) {
 
     await tasks.run();
 
-    term.green("Create zilliqa project Done! \n");
+    term.green("Create zilliqa project Done!");
     return true;
 };

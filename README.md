@@ -6,8 +6,13 @@ Zilliqa bockchain CLI for bootstrap a project with example token contract
 
 ### system requirements
     
+for mac OS please make sure to install cmake with [brew](https://brew.sh/index_de) 
+
     1- Docker 
-    2- nodejs and npm 
+    2- nodejs >= v14.0.0 
+    3- build-essential
+
+Install nodejs with [nvm](https://github.com/nvm-sh/nvm)
 
 Please make sure you have installed the nodejs with npm. First you need to install the `carbon cli` with
 command `npm i -g carbon-zil`

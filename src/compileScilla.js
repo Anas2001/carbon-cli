@@ -14,7 +14,7 @@ const term = require('terminal-kit').terminal;
 const list = promisify(fs.readdir);
 const writeFile = promisify(fs.writeFile);
 const contractAbsPath = path.resolve(process.cwd(), "zilliqa", "contracts");
-const contractPath = (contractName) => path.resolve(__dirname, "../zilliqa/contracts/" + contractName);
+const contractPath = (contractName) => path.resolve(process.cwd(), "zilliqa", "contracts", contractName);
 
 function parseArgumentAndOptions(rawArgs) {
     const args = arg({
@@ -53,7 +53,7 @@ async function prompForMissingOptions(options) {
 }
 
 async function compileScilla(contractPath, contractName, targetDir) {
-    const code = fs.readFileSync(contractPath, "utf8");
+    const code = fs.readFileSync(path.resolve(contractPath, contractName), "utf8");
     const contractData = await parseParamsContract(code);
     const artifact = createContractJsArtifact(contractName, contractData);
     if (!fs.existsSync(targetDir)) {
@@ -66,14 +66,12 @@ export async function exec(args) {
     let options = parseArgumentAndOptions(args);
     options = await prompForMissingOptions(options);
     const tasks = [];
-    console.log(options);
-    console.log("compile scilla contracts under " + options.contractsPath);
     if (!options.notAll) {
         const contracts = await list(options.contractsPath);
         for (let i = 0; i < contracts.length; i++) {
             tasks.push({
                 title: "compile scilla contract: " + contracts[i],
-                task: () => tryToRun(async () => await compileScilla(contractPath(contracts[i]), contracts[i], options.targetDirectory))
+                task: () => tryToRun(async () => await compileScilla(options.contractsPath, contracts[i], options.targetDirectory))
             });
         }
     } else {
@@ -85,7 +83,7 @@ export async function exec(args) {
 
     await (new Lister(tasks)).run();
 
-    term.green("Compile Done! \n");
+    term.green("Compile Done!");
 
     return true;
 }

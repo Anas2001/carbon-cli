@@ -1,6 +1,6 @@
 {
   "name": "carbon-zil",
-  "version": "1.4.3",
+  "version": "1.4.9",
   "description": "A CLI to bootstrap new zilliqa project and deploy and text contract",
   "main": "./src/main.js",
   "bin": {
@@ -27,7 +27,7 @@
     "commander": "^8.3.0",
     "@etclabscore/dl-github-releases": "^1.2.1",
     "listr": "^0.14.3",
-    "terminal-kit": "^2.2.3",
+    "terminal-kit": "^2.5.1",
     "execa": "3.0.0",
     "pkg-install": "^1.0.0",
     "body-parser": "^1.19.0",

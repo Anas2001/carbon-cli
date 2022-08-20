@@ -6,7 +6,7 @@ module.exports = async (fun, successMsg, errorMsg) => {
         successMsg ? term.green(successMsg + "\n") : null;
         return result;
     } catch (error) {
-        errorMsg ? term.red(errorMsg + "\n") : console.log(error);
+        errorMsg && typeof errorMsg === "string" ? term.red(errorMsg) : console.log(error);
         return process.exit(1);
     }
 };
