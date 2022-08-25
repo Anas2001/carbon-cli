@@ -30,6 +30,7 @@ function contract({privateKey, api, version, net, contractAddress}) {
         const args = arguments;
         initParams = initParams.filter(({vname}) => vname !== "_scilla_version").map((param, index) => {
             param.value = args[index].toString();
+            param.type = param.type.split("with")[0].trim();
             return param;
         });
         initParams.push({
@@ -50,8 +51,8 @@ function contract({privateKey, api, version, net, contractAddress}) {
         } else {
             throw new Error("something went wrong by contract deployment with txId: 0x" + deployTx.id);
         }
-    }
-    ,${transitions.map(transition => `async ${transition.vname}(${transition.params.length ? transition.params.map(({vname}) => vname).join(", ") + ', ' : ""}gasPrice = 2000,gasLimit = 2000, zilAmount = 0, callback) {
+    },
+    ${transitions.map(transition => `async ${transition.vname}(${transition.params.length ? transition.params.map(({vname}) => vname).join(", ") + ', ' : ""}gasPrice = 2000,gasLimit = 2000, zilAmount = 0, callback) {
         const args = arguments;
         const e = new Error();
         const frame = e.stack.split("\\n")[1];
@@ -59,6 +60,7 @@ function contract({privateKey, api, version, net, contractAddress}) {
         const params = ${JSON.stringify(transition.params)}.map((param, index) => {
             if (typeof args[index] === "object") {
                 param.value = args[index];
+                param.type = param.type.split("with")[0].trim();
             } else {
                 param.value = args[index].toString();
             }
@@ -79,8 +81,8 @@ function contract({privateKey, api, version, net, contractAddress}) {
             console.log(JSON.stringify(confirmedTxn, null, 2));
         }
         return confirmedTxn.receipt.success === true;
-    }`)}
-    ,events: ${JSON.stringify(events.reduce((acc, event) => {
+    }`)},
+    events: ${JSON.stringify(events.reduce((acc, event) => {
             const obj = {};
             obj[event.vname] = {
                 name: event.vname,
@@ -91,8 +93,8 @@ function contract({privateKey, api, version, net, contractAddress}) {
             };
             return Object.assign(acc, obj);
         }, {})
-    )}
-    ,fields: ${JSON.stringify(fields.reduce((acc, field) => {
+    )},
+    fields: ${JSON.stringify(fields.reduce((acc, field) => {
         const obj = {};
         obj[field.vname] = {
             [field.vname]: field.vname,
