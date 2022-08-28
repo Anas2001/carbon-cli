@@ -61,7 +61,7 @@ function contract({privateKey, api, version, net, contractAddress}) {
             if (typeof args[index] === "object") {
                 param.value = args[index];
             } else {
-                param.value = args[index].toString();
+                param.value = typeof args[index] === "boolean" ? {constructor: args[index] ? "True" : "False", argtypes: [], arguments: []} : args[index].toString();
             }
             param.type = param.type.split("with")[0].trim();
             return param;
