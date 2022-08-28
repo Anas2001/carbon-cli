@@ -60,10 +60,10 @@ function contract({privateKey, api, version, net, contractAddress}) {
         const params = ${JSON.stringify(transition.params)}.map((param, index) => {
             if (typeof args[index] === "object") {
                 param.value = args[index];
-                param.type = param.type.split("with")[0].trim();
             } else {
                 param.value = args[index].toString();
             }
+            param.type = param.type.split("with")[0].trim();
             return param;
         });
         const callTx = await zilliqa.contracts.at(myAddress).callWithoutConfirm(tag, params, {
