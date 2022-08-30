@@ -1,6 +1,6 @@
 {
   "name": "carbon-zil",
-  "version": "1.5.3",
+  "version": "1.5.5",
   "description": "A CLI to bootstrap new zilliqa project and deploy and text contract",
   "main": "./src/main.js",
   "bin": {
